@@ -17,6 +17,7 @@ import { streamsBySender, streamsByRecipient } from "@/lib/factory";
 import { getStreamAddress, getStreamInfo } from "@/lib/stream";
 import { fromStroops } from "@/lib/format";
 import { AvatarUpload } from "@/components/profile/AvatarUpload";
+import { GasEfficiencyCard } from "@/components/profile/GasEfficiencyCard";
 
 type ConnectionState =
   | { status: "loading" }
@@ -92,10 +93,12 @@ function CashflowSection({ publicKey }: { publicKey: string }) {
   );
 
   return (
-    <div className="card mb-6">
-      <h2 className="text-sm font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-1">
-        Cash Flow — past {CASHFLOW_WINDOW_DAYS} days
-      </h2>
+    <>
+      <GasEfficiencyCard streams={streams} loading={loading} />
+      <div className="card mb-6">
+        <h2 className="text-sm font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-1">
+          Cash Flow — past {CASHFLOW_WINDOW_DAYS} days
+        </h2>
       <p className="text-xs text-gray-400 dark:text-gray-500 mb-4">
         Estimated streaming income vs expenditure from active stream rates.
       </p>
@@ -133,6 +136,7 @@ function CashflowSection({ publicKey }: { publicKey: string }) {
         </>
       )}
     </div>
+  </>
   );
 }
 

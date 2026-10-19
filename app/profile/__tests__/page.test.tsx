@@ -253,4 +253,18 @@ describe("ProfilePage", () => {
     expect(container.textContent).toContain("Default Blockie");
     expect(container.textContent).toContain("Avatar removed. Reset to default blockie.");
   });
+
+  it("renders Gas Efficiency KPI card displaying lifetime gas savings (#785)", () => {
+    walletState.connected = true;
+    walletState.publicKey = "GABCDE1234567890ABCDEF1234567890ABCDEF1234567890ABCDEF";
+    walletState.walletName = "Freighter";
+    const container = renderProfilePage();
+
+    expect(container.textContent).toContain("Gas Efficiency");
+    const kpiCard = container.querySelector('[data-testid="gas-efficiency-card"]');
+    expect(kpiCard).not.toBeNull();
+    expect(kpiCard?.textContent).toContain("Lifetime Gas Fees Saved");
+    expect(kpiCard?.textContent).toContain("Withdrawals Avoided");
+    expect(kpiCard?.textContent).toContain("Avg Fee per Payout");
+  });
 });
