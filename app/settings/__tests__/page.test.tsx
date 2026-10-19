@@ -122,4 +122,45 @@ describe("SettingsPage", () => {
     expect(container.textContent).toContain("Auto-Refresh Interval");
     cleanup(root, container);
   });
+
+  it("renders notification channels (Email, Telegram, Browser Push) and preferences matrix (#786)", () => {
+    const { container, root } = renderSettings();
+    expect(container.textContent).toContain("Notification Channels");
+    expect(container.textContent).toContain("Browser Push");
+    expect(container.textContent).toContain("Email");
+    expect(container.textContent).toContain("Telegram");
+
+    expect(container.textContent).toContain("Notification Preferences Matrix");
+    expect(container.textContent).toContain("Stream Cancelled");
+    expect(container.textContent).toContain("Cliff Reached");
+    expect(container.textContent).toContain("Stream Completed");
+    expect(container.textContent).toContain("Funds Withdrawn");
+
+    const matrix = container.querySelector('[data-testid="notification-matrix"]');
+    expect(matrix).not.toBeNull();
+
+    const pushToggle = container.querySelector('[data-testid="channel-toggle-browserPush"]');
+    const emailToggle = container.querySelector('[data-testid="channel-toggle-email"]');
+    const telegramToggle = container.querySelector('[data-testid="channel-toggle-telegram"]');
+    expect(pushToggle).not.toBeNull();
+    expect(emailToggle).not.toBeNull();
+    expect(telegramToggle).not.toBeNull();
+
+    cleanup(root, container);
+  });
+
+  it("toggles notification channels and updates matrix cells (#786)", () => {
+    const { container, root } = renderSettings();
+    const telegramToggle = container.querySelector('[data-testid="channel-toggle-telegram"]') as HTMLInputElement | null;
+    expect(telegramToggle).not.toBeNull();
+
+    act(() => {
+      telegramToggle!.click();
+    });
+
+    const matrixCell = container.querySelector('[data-testid="matrix-streamCancel-telegram"]') as HTMLInputElement | null;
+    expect(matrixCell).not.toBeNull();
+
+    cleanup(root, container);
+  });
 });
