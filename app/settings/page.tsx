@@ -20,6 +20,7 @@ import {
   REFRESH_INTERVAL_OPTIONS,
   notifySettingsUpdated,
 } from "@/hooks/useSettings";
+import { DeveloperPayloadInspector } from "@/components/DeveloperPayloadInspector";
 import {
   type NotificationChannelConfig,
   type NotificationMatrix,
@@ -38,6 +39,8 @@ interface SettingsState {
   notificationsEnabled: boolean;
   notificationChannels: NotificationChannelConfig;
   notificationMatrix: NotificationMatrix;
+  /** Developer mode reveals raw contract storage keys and XDR payloads in confirmation dialogs (#787). */
+  developerMode: boolean;
   /** Display timestamps as relative ("2h ago") or absolute date-time. Added #556. */
   timeFormat: TimeFormat;
   /**
@@ -57,6 +60,7 @@ function loadSettings(): SettingsState {
       notificationsEnabled: true,
       notificationChannels: DEFAULT_NOTIFICATION_CHANNELS,
       notificationMatrix: DEFAULT_NOTIFICATION_MATRIX,
+      developerMode: false,
       timeFormat: "absolute",
       autoRefreshInterval: 0,
     };
@@ -71,6 +75,7 @@ function loadSettings(): SettingsState {
         notificationsEnabled: parsed.notificationsEnabled ?? true,
         notificationChannels: parsed.notificationChannels ?? DEFAULT_NOTIFICATION_CHANNELS,
         notificationMatrix: parsed.notificationMatrix ?? DEFAULT_NOTIFICATION_MATRIX,
+        developerMode: parsed.developerMode === true,
         timeFormat: parsed.timeFormat === "relative" ? "relative" : "absolute",
         autoRefreshInterval: REFRESH_INTERVAL_OPTIONS.some(
           (o) => o.value === parsed.autoRefreshInterval,
@@ -88,6 +93,7 @@ function loadSettings(): SettingsState {
     notificationsEnabled: true,
     notificationChannels: DEFAULT_NOTIFICATION_CHANNELS,
     notificationMatrix: DEFAULT_NOTIFICATION_MATRIX,
+    developerMode: false,
     timeFormat: "absolute",
     autoRefreshInterval: 0,
   };
@@ -176,6 +182,7 @@ export default function SettingsPage() {
       notificationsEnabled: true,
       notificationChannels: DEFAULT_NOTIFICATION_CHANNELS,
       notificationMatrix: DEFAULT_NOTIFICATION_MATRIX,
+      developerMode: false,
       timeFormat: "absolute",
       autoRefreshInterval: 0,
     };
@@ -641,6 +648,48 @@ export default function SettingsPage() {
               </table>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* Developer Mode (#787) */}
+      <section className="card" data-testid="developer-mode-section">
+        <h2 className="text-sm font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-4">
+          Developer Mode
+        </h2>
+        <div className="flex flex-col space-y-4">
+          <label className="flex flex-row items-center justify-between cursor-pointer">
+            <div>
+              <span className="text-sm font-medium">Developer Inspection Mode</span>
+              <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">
+                Display raw Soroban contract storage keys and base64 XDR payloads in transaction confirmation dialogs.
+              </p>
+            </div>
+            <input
+              type="checkbox"
+              checked={settings.developerMode}
+              onChange={(e) => updateSetting("developerMode", e.target.checked)}
+              data-testid="developer-mode-toggle"
+              className="w-5 h-5 rounded border-gray-300 dark:border-gray-600 text-black dark:text-white focus:ring-black dark:focus:ring-white"
+            />
+          </label>
+
+          {settings.developerMode && (
+            <div className="border-t border-gray-100 dark:border-gray-800 pt-3 space-y-3">
+              <div className="flex items-center gap-2">
+                <span className="px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider bg-purple-100 text-purple-800 dark:bg-purple-900/40 dark:text-purple-300 rounded">
+                  Active
+                </span>
+                <span className="text-xs text-gray-500 dark:text-gray-400">
+                  Transaction confirmation dialogs (Cancel, Top Up, Withdraw) will now display raw contract storage keys and invocation XDR payloads for debugging.
+                </span>
+              </div>
+              <DeveloperPayloadInspector
+                contractId="CDUMMYSTREAMEXAMPLE1234567890ABCDEF1234567890"
+                method="cancel"
+                storageKeySymbol="info"
+              />
+            </div>
+          )}
         </div>
       </section>
 

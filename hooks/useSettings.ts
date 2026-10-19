@@ -48,6 +48,8 @@ export interface PublicSettings {
   advancedMode: boolean;
   notificationChannels: NotificationChannelConfig;
   notificationMatrix: NotificationMatrix;
+  /** Developer mode reveals raw contract storage keys and XDR payloads in confirmation dialogs (#787). */
+  developerMode: boolean;
 }
 
 const STORAGE_KEY = "conduit:settings";
@@ -58,6 +60,7 @@ const DEFAULTS: PublicSettings = {
   advancedMode: false,
   notificationChannels: DEFAULT_NOTIFICATION_CHANNELS,
   notificationMatrix: DEFAULT_NOTIFICATION_MATRIX,
+  developerMode: false,
 };
 
 function readFromStorage(): PublicSettings {
@@ -76,6 +79,7 @@ function readFromStorage(): PublicSettings {
       advancedMode: parsed.advancedMode === true,
       notificationChannels: parsed.notificationChannels ?? DEFAULT_NOTIFICATION_CHANNELS,
       notificationMatrix: parsed.notificationMatrix ?? DEFAULT_NOTIFICATION_MATRIX,
+      developerMode: parsed.developerMode === true,
     };
   } catch {
     return DEFAULTS;

@@ -163,4 +163,32 @@ describe("SettingsPage", () => {
 
     cleanup(root, container);
   });
+
+  it("renders Developer Mode toggle and reveals raw storage keys and XDR preview (#787)", () => {
+    const { container, root } = renderSettings();
+    expect(container.textContent).toContain("Developer Mode");
+    expect(container.textContent).toContain("Developer Inspection Mode");
+
+    const devToggle = container.querySelector('[data-testid="developer-mode-toggle"]') as HTMLInputElement | null;
+    expect(devToggle).not.toBeNull();
+    expect(devToggle?.checked).toBe(false);
+
+    // Toggle Developer Mode on
+    act(() => {
+      devToggle!.click();
+    });
+
+    expect(devToggle?.checked).toBe(true);
+    expect(container.textContent).toContain("Developer Mode: Raw Contract Data & XDR");
+    expect(container.textContent).toContain("Raw Contract Storage Key (LedgerKey XDR)");
+    expect(container.textContent).toContain("Raw Invocation XDR");
+
+    const storageKeyEl = container.querySelector('[data-testid="raw-storage-key-xdr"]');
+    expect(storageKeyEl).not.toBeNull();
+
+    const invocationXdrEl = container.querySelector('[data-testid="raw-invocation-xdr"]');
+    expect(invocationXdrEl).not.toBeNull();
+
+    cleanup(root, container);
+  });
 });
