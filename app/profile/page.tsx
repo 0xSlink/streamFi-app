@@ -16,6 +16,7 @@ import {
 import { streamsBySender, streamsByRecipient } from "@/lib/factory";
 import { getStreamAddress, getStreamInfo } from "@/lib/stream";
 import { fromStroops } from "@/lib/format";
+import { AvatarUpload } from "@/components/profile/AvatarUpload";
 
 type ConnectionState =
   | { status: "loading" }
@@ -188,7 +189,9 @@ export default function ProfilePage() {
                 </button>
               </div>
 
-              <div className="space-y-4">
+              <AvatarUpload publicKey={publicKey} />
+
+              <div className="space-y-4 pt-2">
                 <div className="flex items-center justify-between">
                   <span className="text-sm text-gray-500 dark:text-gray-400">Provider</span>
                   <span className="text-sm font-medium">{walletName ?? "Unknown"}</span>
